@@ -46,5 +46,8 @@ def delete(todo_id):
     return redirect(url_for("home"))
 
 if __name__ == "__main__":
-    db.create_all()
+    # هذا السطر يفتح "سياق التطبيق" ليتمكن Flask من التعامل مع قاعدة البيانات
+    with app.app_context():
+        db.create_all()
+    
     app.run(debug=True)
