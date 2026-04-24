@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+</head>
+<body>
+    <div style="margin-top: 100px;" class="ui container">
+        <div class="ui segment" style="max-width: 400px; margin: auto;">
+            <h2 class="ui header">Login</h2>
+
+            {% with messages = get_flashed_messages() %}
+              {% if messages %}
+                <div class="ui negative message">
+                  {% for message in messages %}
+                    <p>{{ message }}</p>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            {% endwith %}
+            <form class="ui form" method="POST">
+                <div class="field">
+                    <input type="text" name="username" placeholder="Username" required>
+                </div>
+                <div class="field">
+                    <input type="password" name="password" placeholder="Password" required>
+                </div>
+                <button class="ui green fluid button" type="submit">Login</button>
+            </form>
+            <div style="margin-top: 10px;"><a href="/register">Create an account</a></div>
+        </div>
+    </div>
+</body>
+</html>
