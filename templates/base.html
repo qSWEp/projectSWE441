@@ -23,7 +23,8 @@
         </form>
 
         <hr>
-
+        
+        <div style="max-height: 500px; overflow-y: auto; padding-right: 10px;">
         {% for todo in todo_list %}
         <div class="ui segment">
             <p class="ui big header">{{todo.id }} | {{ todo.title }}</p>
@@ -38,6 +39,7 @@
             <a class="ui orange button" href="/delete/{{ todo.id }}">Delete</a>
         </div>
         {% endfor %}
+    </div>
     </div>
 </body>
 
