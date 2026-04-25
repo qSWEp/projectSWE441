@@ -86,10 +86,11 @@ def home():
 def add():
     title = request.form.get("title")
     priority = request.form.get("priority", "Medium")
-    new_todo = Todo(title=title, complete=False, priority=priority, user_id=current_user.id)
-    db.session.add(new_todo)
-    db.session.commit()
     
+    if title and title.strip():
+        new_todo = Todo(title=title.strip(), complete=False, priority=priority, user_id=current_user.id)
+        db.session.add(new_todo)
+        db.session.commit()
     return redirect(url_for("home"))
 
 @app.route("/update/<int:todo_id>")
