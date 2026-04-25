@@ -77,7 +77,15 @@ def logout():
 @app.route("/")
 @login_required
 def home():
-    todo_list = Todo.query.filter_by(user_id=current_user.id).all()
+    search_query = request.args.get('search')
+    if search_query:
+       todo_list = Todo.query.filter(
+           Todo.user_id == current_user.id,
+            Todo.title.contains(search_query)
+        ).all()
+    else:
+        todo_list = Todo.query.filter_by(user_id=current_user.id).all()  
+        
     return render_template("base.html", todo_list=todo_list)
 
 @app.route("/add", methods=["POST"])
