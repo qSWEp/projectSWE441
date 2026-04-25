@@ -33,6 +33,7 @@ class Todo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     complete = db.Column(db.Boolean, default=False)
+    priority = db.Column(db.String(10), default='Medium')
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
 # المسارات (Routes)
@@ -84,7 +85,8 @@ def home():
 @login_required
 def add():
     title = request.form.get("title")
-    new_todo = Todo(title=title, complete=False, user_id=current_user.id)
+    priority = request.form.get("priority", "Medium")
+    new_todo = Todo(title=title, complete=False, priority=priority, user_id=current_user.id)
     db.session.add(new_todo)
     db.session.commit()
     
