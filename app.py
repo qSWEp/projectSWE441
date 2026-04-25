@@ -93,6 +93,7 @@ def home():
 @login_required
 def add():
     title = request.form.get("title")
+    #الأولوية
     priority = request.form.get("priority", "Medium")
     
     if title and title.strip():
