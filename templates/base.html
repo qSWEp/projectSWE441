@@ -31,7 +31,14 @@
             <button class="ui green button" type="submit">Add</button>
         </form>
         <hr>
-
+        <form action="/" method="GET" class="ui form" style="margin-bottom: 20px;">
+            <div class="ui action input" style="width: 100%;">
+                <input type="text" name="search" placeholder="Search your tasks..." value="{{ request.args.get('search', '') }}">
+                <button class="ui blue button" type="submit">Search</button>
+                <a href="/" class="ui button">Clear</a>
+            </div>
+        </form>
+        
         <div style="max-height: 500px; overflow-y: auto; padding-right: 10px;">
         {% for todo in todo_list %}
         <div class="ui segment">
