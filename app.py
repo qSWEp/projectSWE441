@@ -10,7 +10,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-# إعداد نظام تسجيل الدخول
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
@@ -19,7 +18,6 @@ login_manager.login_view = 'login'
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-# النماذج (Models)
 class User(db.Model, UserMixin):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
@@ -34,21 +32,18 @@ class Todo(db.Model):
     title = db.Column(db.String(100), nullable=False)
     complete = db.Column(db.Boolean, default=False)
     category = db.Column(db.String(50), default='General')
+    priority = db.Column(db.String(10), default='Medium')
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-
-# المسارات (Routes)
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
         return redirect(url_for('home'))
-        
     if request.method == 'POST':
         hashed_pw = generate_password_hash(request.form.get('password'), method='pbkdf2:sha256')
         new_user = User(username=request.form.get('username'), password=hashed_pw)
         db.session.add(new_user)
         db.session.commit()
-        
         login_user(new_user)
         return redirect(url_for('home'))
     return render_template("register.html")
@@ -57,16 +52,13 @@ def register():
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('home'))
-        
     if request.method == 'POST':
         user = User.query.filter_by(username=request.form.get('username')).first()
         if user and check_password_hash(user.password, request.form.get('password')):
             login_user(user)
             return redirect(url_for('home'))
         else:
-            # هنا التعديل: إظهار التنبيه في حال الخطأ
             flash('Invalid username or password!')
-            
     return render_template("login.html")
 
 @app.route("/logout")
@@ -79,10 +71,16 @@ def logout():
 @login_required
 def home():
     category_filter = request.args.get('category', 'All')
+    search_query = request.args.get('search')
+    
+    query = Todo.query.filter_by(user_id=current_user.id)
+    
     if category_filter != 'All':
-        todo_list = Todo.query.filter_by(user_id=current_user.id, category=category_filter).all()
-    else:
-        todo_list = Todo.query.filter_by(user_id=current_user.id).all()
+        query = query.filter_by(category=category_filter)
+    if search_query:
+        query = query.filter(Todo.title.contains(search_query))
+    
+    todo_list = query.all()
     categories = ['All', 'Work', 'Personal', 'Shopping', 'Other']
     return render_template("base.html", todo_list=todo_list, categories=categories, current_category=category_filter)
 
@@ -91,10 +89,11 @@ def home():
 def add():
     title = request.form.get("title")
     category = request.form.get("category", "General")
-    new_todo = Todo(title=title, complete=False, category=category, user_id=current_user.id)
-    db.session.add(new_todo)
-    db.session.commit()
-    
+    priority = request.form.get("priority", "Medium")
+    if title and title.strip():
+        new_todo = Todo(title=title.strip(), complete=False, category=category, priority=priority, user_id=current_user.id)
+        db.session.add(new_todo)
+        db.session.commit()
     return redirect(url_for("home"))
 
 @app.route("/update/<int:todo_id>")
