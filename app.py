@@ -84,10 +84,11 @@ def home():
 @login_required
 def add():
     title = request.form.get("title")
-    new_todo = Todo(title=title, complete=False, user_id=current_user.id)
-    db.session.add(new_todo)
-    db.session.commit()
-    
+
+    if title and title.strip():
+        new_todo = Todo(title=title.strip(), complete=False, user_id=current_user.id)
+        db.session.add(new_todo)
+        db.session.commit()
     return redirect(url_for("home"))
 
 @app.route("/update/<int:todo_id>")
