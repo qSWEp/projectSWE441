@@ -1,22 +1,123 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join Us | Task Manager</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <style>
+        /* --- الأنيميشن الاحترافي --- */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        body {
+            background-color: #FEFCE0; /* Lime background */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .register-card {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(26, 40, 30, 0.15);
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid rgba(26, 40, 30, 0.05);
+            
+            /* حركة ظهور الكرت */
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .ui.header { 
+            color: #1A281E !important; 
+            font-weight: 700; 
+        }
+
+        /* تحريك الحقول بتتابع زمنى */
+        .field {
+            animation: slideInRight 0.5s ease-out both;
+        }
+        .field:nth-child(1) { animation-delay: 0.3s; }
+        .field:nth-child(2) { animation-delay: 0.5s; }
+
+        /* تأثير التركيز (Focus) */
+        .ui.form input:focus {
+            border-color: #1A281E !important;
+            box-shadow: 0 0 8px rgba(26, 40, 30, 0.2) !important;
+        }
+
+        .ui.emerald.button {
+            background-color: #1A281E !important;
+            color: #FEFCE0 !important;
+            border-radius: 10px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: fadeInUp 0.6s ease-out 0.7s both; /* تظهر بعد الحقول */
+        }
+
+        .ui.emerald.button:hover {
+            background-color: #2a3d2e !important;
+            transform: scale(1.03);
+            box-shadow: 0 5px 15px rgba(26, 40, 30, 0.3);
+        }
+
+        .login-link { 
+            color: #1A281E; 
+            font-weight: 600; 
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .login-link:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-    <div style="margin-top: 100px;" class="ui container">
-        <div class="ui segment" style="max-width: 400px; margin: auto;">
-            <h2 class="ui header">Register</h2>
-            <form class="ui form" method="POST">
-                <div class="field">
-                    <input type="text" name="username" placeholder="Choose Username" required>
+    <div class="register-card">
+        <h2 class="ui center aligned icon header">
+            <i class="user plus icon" style="color: #1A281E;"></i>
+            <div class="content">
+                Create Account
+                <div class="sub header" style="color: #666; margin-top: 5px;">Join our community today.</div>
+            </div>
+        </h2>
+
+        <form class="ui form" method="POST">
+            <div class="field">
+                <label>Desired Username</label>
+                <div class="ui left icon input">
+                    <i class="user icon"></i>
+                    <input type="text" name="username" placeholder="Choose a unique name" required>
                 </div>
-                <div class="field">
-                    <input type="password" name="password" placeholder="Choose Password" required>
+            </div>
+            <div class="field">
+                <label>Secret Password</label>
+                <div class="ui left icon input">
+                    <i class="key icon"></i>
+                    <input type="password" name="password" placeholder="At least 6 characters" required>
                 </div>
-                <button class="ui blue fluid button" type="submit">Register</button>
-            </form>
-            <div style="margin-top: 10px;"><a href="/login">Back to Login</a></div>
+            </div>
+            <button class="ui emerald fluid large button" type="submit">
+                <i class="rocket icon"></i> Start Journey
+            </button>
+        </form>
+
+        <div class="ui center aligned container" style="margin-top: 25px; animation: fadeInUp 0.5s ease-out 0.9s both;">
+            <span style="color: #666;">Already a member?</span> 
+            <a href="/login" class="login-link">Log In</a>
         </div>
     </div>
 </body>

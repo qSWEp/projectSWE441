@@ -19,6 +19,7 @@ login_manager.login_view = 'login'
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+# --- النماذج (Models) ---
 class User(db.Model, UserMixin):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
@@ -37,6 +38,8 @@ class Todo(db.Model):
     start_date = db.Column(db.String(10)) 
     end_date = db.Column(db.String(10))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+# --- المسارات (Routes) ---
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():
@@ -84,8 +87,26 @@ def home():
         query = query.filter(Todo.title.contains(search_query))
     
     todo_list = query.all()
+    
+    # --- منطق حساب التقدم (Progress Logic) ---
+    total_tasks = len(todo_list)
+    completed_tasks = len([t for t in todo_list if t.complete])
+    
+    # حساب النسبة المئوية
+    if total_tasks > 0:
+        progress_val = int((completed_tasks / total_tasks) * 100)
+    else:
+        progress_val = 0
+    # ---------------------------------------
+
     categories = ['All', 'Work', 'Personal', 'Shopping', 'Other']
-    return render_template("base.html", todo_list=todo_list, categories=categories, current_category=category_filter)
+    return render_template(
+        "base.html", 
+        todo_list=todo_list, 
+        categories=categories, 
+        current_category=category_filter,
+        progress=progress_val # تمرير النسبة للواجهة
+    )
 
 @app.route("/add", methods=["POST"])
 @login_required
@@ -110,7 +131,6 @@ def add():
         db.session.commit()
     return redirect(url_for("home"))
 
-# --- التعديل الجديد: مسار مخصص للإكمال ---
 @app.route("/complete/<int:todo_id>")
 @login_required
 def complete(todo_id):
@@ -120,7 +140,6 @@ def complete(todo_id):
         db.session.commit()
     return redirect(url_for("home"))
 
-# --- التعديل الجديد: مسار مخصص للتحديث الفعلي (تعديل النص) ---
 @app.route("/update/<int:todo_id>", methods=["GET", "POST"])
 @login_required
 def update(todo_id):

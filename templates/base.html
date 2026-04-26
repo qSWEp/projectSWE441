@@ -3,110 +3,248 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Todo App</title>
+    <title>Task Manager Pro | Dashboard</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+    <style>
+        :root {
+            --emerald: #1A281E;
+            --lime-bg: #FDFAE5; /* درجة أهدأ من Lime للخلفية */
+            --white: #FFFFFF;
+            --emerald-light: #2a3d2e;
+        }
+
+        body {
+            background-color: var(--lime-bg);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* القائمة الجانبية - Sidebar */
+        .app-sidebar {
+            width: 260px;
+            background-color: var(--emerald);
+            height: 100vh;
+            position: fixed;
+            color: white;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+        }
+
+        /* المحتوى الرئيسي */
+        .main-content {
+            margin-left: 260px;
+            width: calc(100% - 260px);
+            padding: 40px 60px;
+        }
+
+        .sidebar-logo {
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-bottom: 50px;
+            letter-spacing: 1.5px;
+            border-bottom: 1px solid rgba(254, 252, 224, 0.1);
+            padding-bottom: 15px;
+        }
+
+        .nav-item {
+            color: rgba(254, 252, 224, 0.7) !important;
+            padding: 14px 18px;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            display: block;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background-color: rgba(254, 252, 224, 0.1);
+            color: #FEFCE0 !important;
+            transform: translateX(5px);
+        }
+
+        /* شريط التقدم - Progress Bar Section */
+        .stats-card {
+            background: var(--white);
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(26, 40, 30, 0.05);
+            margin-bottom: 40px;
+        }
+
+        .ui.progress.emerald .bar {
+            background-color: var(--emerald) !important;
+        }
+
+        /* بطاقات المهام - Task Cards */
+        .task-card {
+            background: var(--white) !important;
+            border-radius: 15px !important;
+            border: none !important;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03) !important;
+            margin-bottom: 20px !important;
+            border-left: 6px solid var(--emerald) !important;
+            transition: transform 0.3s ease;
+        }
+
+        .task-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(26, 40, 30, 0.08) !important;
+        }
+
+        .priority-High { border-left-color: #db2828 !important; }
+        .priority-Medium { border-left-color: #fbbd08 !important; }
+        .priority-Low { border-left-color: #2185d0 !important; }
+
+        .user-profile {
+            margin-top: auto;
+            background: rgba(254, 252, 224, 0.05);
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        .ui.emerald.button {
+            background-color: var(--emerald) !important;
+            color: #FEFCE0 !important;
+            border-radius: 10px;
+        }
+    </style>
 </head>
 <body>
-    <div style="margin-top: 50px;" class="ui container">
-        <div style="text-align: right;">
-            Welcome, <strong>{{ current_user.username }}</strong> | <a href="/logout">Logout</a>
+
+    <div class="app-sidebar">
+        <div class="sidebar-logo">
+            <i class="check double icon"></i> SWE MANAGER
         </div>
-        <h1 class="ui center aligned violet header">To Do App</h1>
         
-        <form class="ui form" action="/add" method="post">
-            <div class="field">
-                <label>Todo Title</label>
-                <input type="text" name="title" placeholder="Enter Todo..." required><br>
-            </div>
-
-            <div class="two fields">
-                <div class="field">
-                    <label>Start Date</label>
-                    <input type="date" name="start_date">
-                </div>
-                <div class="field">
-                    <label>End Date</label>
-                    <input type="date" name="end_date">
-                </div>
-            </div>
-
-            <div class="field">
-                <label>Priority</label>
-                <select name="priority" class="ui dropdown">
-                    <option value="High">High</option>
-                    <option value="Medium" selected>Medium</option>
-                    <option value="Low">Low</option>
-                </select>
-            </div>
-            <div class="field">
-                <label>Category</label>
-                <select name="category" class="ui dropdown">
-                    <option value="Work">Work</option>
-                    <option value="Personal">Personal</option>
-                    <option value="Shopping">Shopping</option>
-                    <option value="Other">Other</option>
-                </select>
-            </div>
-            <button class="ui green button" type="submit">Add</button>
-        </form>
-        <hr>
-
-        <div style="margin-bottom: 15px;">
+        <div style="flex-grow: 1;">
+            <p style="text-transform: uppercase; font-size: 0.75rem; color: rgba(254,252,224,0.4); margin: 0 0 15px 15px; font-weight: 700;">Categories</p>
             {% for cat in categories %}
-            <a href="/?category={{ cat }}"
-               class="ui button {% if current_category == cat %}violet{% endif %}">
-                {{ cat }}
+            <a href="/?category={{ cat }}" class="nav-item {% if current_category == cat %}active{% endif %}">
+                <i class="folder open outline icon"></i> {{ cat }}
             </a>
             {% endfor %}
         </div>
 
-        <form action="/" method="GET" class="ui form" style="margin-bottom: 20px;">
-            <div class="ui action input" style="width: 100%;">
-                <input type="text" name="search" placeholder="Search your tasks..." value="{{ request.args.get('search', '') }}">
-                <button class="ui blue button" type="submit">Search</button>
-                <a href="/" class="ui button">Clear</a>
+        <div class="user-profile">
+            <div style="font-size: 0.85rem; color: rgba(254,252,224,0.5);">Account</div>
+            <div style="font-weight: 600; font-size: 1.1rem; margin-top: 5px;">{{ current_user.username }}</div>
+            <div style="margin-top: 15px;">
+                <a href="/logout" style="color: #ff7675; font-weight: 600;"><i class="sign out icon"></i> Logout</a>
             </div>
-        </form>
-
-        <div style="max-height: 500px; overflow-y: auto; padding-right: 10px;">
-        {% for todo in todo_list %}
-        <div class="ui segment">
-            <p class="ui big header">{{ todo.id }} | {{ todo.title }}</p>
-            
-            <div style="margin-bottom: 10px; color: #666;">
-                <i class="calendar alternate outline icon"></i>
-                <strong>Duration:</strong> {{ todo.start_date if todo.start_date else 'N/A' }} 
-                <strong>to</strong> {{ todo.end_date if todo.end_date else 'N/A' }}
-            </div>
-
-            <span class="ui basic label">{{ todo.category }}</span>
-            {% if todo.priority == 'High' %}
-                <span class="ui red label">High</span>
-            {% elif todo.priority == 'Medium' %}
-                <span class="ui yellow label">Medium</span>
-            {% else %}
-                <span class="ui blue label">Low</span>
-            {% endif %}
-            
-            {% if todo.complete == False %}
-            <span class="ui gray label">Not Complete</span>
-            {% else %}
-            <span class="ui green label">Completed</span>
-            {% endif %}
-            
-            <br><br>
-
-            <a class="ui {% if todo.complete %}blue{% else %}green{% endif %} button" href="/complete/{{ todo.id }}">
-                {% if todo.complete %} Reopen {% else %} Complete {% endif %}
-            </a>
-
-            <a class="ui teal button" href="/update/{{ todo.id }}">Edit Title</a>
-
-            <a class="ui orange button" href="/delete/{{ todo.id }}">Delete</a>
-        </div>
-        {% endfor %}
         </div>
     </div>
+
+    <div class="main-content">
+        
+        <div class="ui grid container">
+            <div class="ten wide column">
+                <h1 style="color: var(--emerald); font-weight: 800; font-size: 2.2rem; margin: 0;">Dashboard</h1>
+                <p style="color: #636e72; font-size: 1.1rem;">Track and execute your software tasks.</p>
+            </div>
+            <div class="six wide column right aligned">
+                <form action="/" method="GET" class="ui action input" style="width: 100%;">
+                    <input type="text" name="search" placeholder="Search tasks..." value="{{ request.args.get('search', '') }}">
+                    <button class="ui emerald button" type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="stats-card">
+            <div class="ui grid middle aligned">
+                <div class="twelve wide column">
+                    <span style="font-weight: 700; color: var(--emerald); text-transform: uppercase; font-size: 0.85rem;">Task Completion Progress</span>
+                    <div class="ui progress emerald small" style="margin-top: 15px; background: #eee;">
+                        <div class="bar" style="width: {{ progress }}%;"></div>
+                    </div>
+                </div>
+                <div class="four wide column right aligned">
+                    <div style="font-size: 2.5rem; font-weight: 900; color: var(--emerald); line-height: 1;">{{ progress }}%</div>
+                    <div style="font-weight: 600; color: #999; margin-top: 5px;">Performance</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ui grid stackable">
+            <div class="six wide column">
+                <div class="ui raised segment">
+                    <h3 class="ui header" style="color: var(--emerald);">Add Task</h3>
+                    <form class="ui form" action="/add" method="post">
+                        <div class="field">
+                            <label>Title</label>
+                            <input type="text" name="title" placeholder="Project name / Task..." required>
+                        </div>
+                        <div class="two fields">
+                            <div class="field"><label>Start</label><input type="date" name="start_date"></div>
+                            <div class="field"><label>End</label><input type="date" name="end_date"></div>
+                        </div>
+                        <div class="field">
+                            <label>Priority</label>
+                            <select name="priority" class="ui dropdown">
+                                <option value="High">High Priority</option>
+                                <option value="Medium" selected>Medium Priority</option>
+                                <option value="Low">Low Priority</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label>Category</label>
+                            <select name="category" class="ui dropdown">
+                                <option value="Work">Work</option>
+                                <option value="Personal">Personal</option>
+                                <option value="Shopping">Shopping</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <button class="ui emerald fluid large button" type="submit">Create New Task</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="ten wide column">
+                {% if not todo_list %}
+                <div class="ui segment center aligned" style="padding: 60px; background: none; border: 2px dashed #dcdde1; border-radius: 20px;">
+                    <i class="clipboard outline icon massive" style="color: #dcdde1;"></i>
+                    <h3 style="color: #b2bec3; margin-top: 20px;">No pending tasks. Start by adding one!</h3>
+                </div>
+                {% endif %}
+
+                {% for todo in todo_list %}
+                <div class="ui segment task-card priority-{{ todo.priority }}">
+                    <div class="ui grid middle aligned">
+                        <div class="eleven wide column">
+                            <h3 style="margin: 0; {% if todo.complete %}text-decoration: line-through; color: #b2bec3;{% endif %}">
+                                {{ todo.title }}
+                            </h3>
+                            <div style="font-size: 0.85rem; color: #7f8c8d; margin-top: 8px; font-weight: 500;">
+                                <i class="tag icon"></i> {{ todo.category }} | 
+                                <i class="calendar alternate outline icon"></i> {{ todo.start_date or 'N/A' }} - {{ todo.end_date or 'N/A' }}
+                            </div>
+                        </div>
+                        <div class="five wide column right aligned">
+                            <div class="ui buttons tiny">
+                                <a href="/complete/{{ todo.id }}" class="ui icon basic {{ 'blue' if todo.complete else 'emerald' }} button" title="Change Status">
+                                    <i class="{% if todo.complete %}redo{% else %}check{% endif %} icon"></i>
+                                </a>
+                                <a href="/update/{{ todo.id }}" class="ui icon basic teal button" title="Edit">
+                                    <i class="edit icon"></i>
+                                </a>
+                                <a href="/delete/{{ todo.id }}" class="ui icon basic red button" title="Delete">
+                                    <i class="trash icon"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $('.ui.dropdown').dropdown();
+    </script>
 </body>
 </html>

@@ -1,21 +1,130 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Task | Task Manager</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <style>
+        /* --- تعريف الحركات (The Animations) --- */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        :root {
+            --emerald: #1A281E;
+            --lime: #FEFCE0;
+            --emerald-light: #2a3d2e;
+        }
+
+        body {
+            background-color: var(--lime);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden; /* لمنع السكرول أثناء الحركة */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .edit-card {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(26, 40, 30, 0.15);
+            width: 100%;
+            max-width: 500px;
+            border-top: 5px solid var(--emerald);
+            
+            /* تطبيق حركة الظهور للكرت */
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .ui.header {
+            color: var(--emerald) !important;
+            font-weight: 800 !important;
+        }
+
+        /* تحريك العنوان والحقول بتتابع */
+        .ui.header { animation: slideInRight 0.6s ease-out both; animation-delay: 0.2s; }
+        .field { animation: slideInRight 0.5s ease-out both; animation-delay: 0.4s; }
+
+        .ui.form .field label {
+            color: var(--emerald) !important;
+        }
+
+        /* تأثير التركيز (Focus) بلون الـ Emerald */
+        .ui.form input:focus {
+            border-color: var(--emerald) !important;
+            box-shadow: 0 0 10px rgba(26, 40, 30, 0.15) !important;
+        }
+
+        /* الأزرار وحركاتها */
+        .ui.emerald.button {
+            background-color: var(--emerald) !important;
+            color: var(--lime) !important;
+            border-radius: 10px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: fadeInUp 0.6s ease-out 0.6s both;
+        }
+
+        .ui.emerald.button:hover {
+            background-color: var(--emerald-light) !important;
+            transform: scale(1.05) translateY(-2px);
+            box-shadow: 0 5px 15px rgba(26, 40, 30, 0.3);
+        }
+
+        .ui.basic.button {
+            border-radius: 10px;
+            transition: all 0.3s;
+            animation: fadeInUp 0.6s ease-out 0.7s both;
+        }
+
+        .ui.basic.button:hover {
+            background-color: #f9f9f9 !important;
+            transform: translateY(-1px);
+        }
+    </style>
 </head>
 <body>
-    <div style="margin-top: 100px;" class="ui container">
-        <div class="ui segment" style="max-width: 500px; margin: auto;">
-            <h2 class="ui header">Edit Task Title</h2>
-            <form class="ui form" method="POST">
-                <div class="field">
-                    <label>New Title</label>
-                    <input type="text" name="title" value="{{ todo.title }}" required>
+    <div class="edit-card">
+        <h2 class="ui header">
+            <i class="edit outline icon"></i>
+            <div class="content">
+                Edit Task
+                <div class="sub header" style="color: #666; margin-top: 5px;">Refine your goal details below.</div>
+            </div>
+        </h2>
+
+        <div class="ui divider"></div>
+
+        <form class="ui form" method="POST">
+            <div class="field">
+                <label>Task Title</label>
+                <div class="ui fluid input">
+                    <input type="text" name="title" value="{{ todo.title }}" placeholder="What needs to change?" required autofocus>
                 </div>
-                <button class="ui green button" type="submit">Save Changes</button>
-                <a href="/" class="ui button">Cancel</a>
-            </form>
-        </div>
+            </div>
+            
+            <div style="margin-top: 25px; display: flex; gap: 10px;">
+                <button class="ui emerald large button" type="submit">
+                    <i class="save icon"></i> Save Changes
+                </button>
+                <a href="/" class="ui basic button">
+                    Cancel
+                </a>
+            </div>
+        </form>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
 </body>
 </html>
