@@ -13,11 +13,24 @@
             Welcome, <strong>{{ current_user.username }}</strong> | <a href="/logout">Logout</a>
         </div>
         <h1 class="ui center aligned violet header">To Do App</h1>
+        
         <form class="ui form" action="/add" method="post">
             <div class="field">
                 <label>Todo Title</label>
                 <input type="text" name="title" placeholder="Enter Todo..." required><br>
             </div>
+
+            <div class="two fields">
+                <div class="field">
+                    <label>Start Date</label>
+                    <input type="date" name="start_date">
+                </div>
+                <div class="field">
+                    <label>End Date</label>
+                    <input type="date" name="end_date">
+                </div>
+            </div>
+
             <div class="field">
                 <label>Priority</label>
                 <select name="priority" class="ui dropdown">
@@ -60,6 +73,13 @@
         {% for todo in todo_list %}
         <div class="ui segment">
             <p class="ui big header">{{ todo.id }} | {{ todo.title }}</p>
+            
+            <div style="margin-bottom: 10px; color: #666;">
+                <i class="calendar alternate outline icon"></i>
+                <strong>Duration:</strong> {{ todo.start_date if todo.start_date else 'N/A' }} 
+                <strong>to</strong> {{ todo.end_date if todo.end_date else 'N/A' }}
+            </div>
+
             <span class="ui basic label">{{ todo.category }}</span>
             {% if todo.priority == 'High' %}
                 <span class="ui red label">High</span>
@@ -68,11 +88,13 @@
             {% else %}
                 <span class="ui blue label">Low</span>
             {% endif %}
+            
             {% if todo.complete == False %}
             <span class="ui gray label">Not Complete</span>
             {% else %}
             <span class="ui green label">Completed</span>
             {% endif %}
+            
             <a class="ui teal button" href="/update/{{ todo.id }}">Update</a>
             <a class="ui orange button" href="/delete/{{ todo.id }}">Delete</a>
         </div>

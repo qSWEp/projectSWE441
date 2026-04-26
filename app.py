@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, LoginManager, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'swe441_secret_key'
@@ -33,6 +34,9 @@ class Todo(db.Model):
     complete = db.Column(db.Boolean, default=False)
     category = db.Column(db.String(50), default='General')
     priority = db.Column(db.String(10), default='Medium')
+    # الحقول الجديدة المطلوب إضافتها
+    start_date = db.Column(db.String(10)) 
+    end_date = db.Column(db.String(10))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
 @app.route("/register", methods=['GET', 'POST'])
@@ -90,8 +94,20 @@ def add():
     title = request.form.get("title")
     category = request.form.get("category", "General")
     priority = request.form.get("priority", "Medium")
+    # استلام التواريخ من الفورم
+    start_date = request.form.get("start_date")
+    end_date = request.form.get("end_date")
+    
     if title and title.strip():
-        new_todo = Todo(title=title.strip(), complete=False, category=category, priority=priority, user_id=current_user.id)
+        new_todo = Todo(
+            title=title.strip(), 
+            complete=False, 
+            category=category, 
+            priority=priority, 
+            start_date=start_date, # حفظ تاريخ البداية
+            end_date=end_date,     # حفظ تاريخ النهاية
+            user_id=current_user.id
+        )
         db.session.add(new_todo)
         db.session.commit()
     return redirect(url_for("home"))
