@@ -95,7 +95,14 @@
             <span class="ui green label">Completed</span>
             {% endif %}
             
-            <a class="ui teal button" href="/update/{{ todo.id }}">Update</a>
+            <br><br>
+
+            <a class="ui {% if todo.complete %}blue{% else %}green{% endif %} button" href="/complete/{{ todo.id }}">
+                {% if todo.complete %} Reopen {% else %} Complete {% endif %}
+            </a>
+
+            <a class="ui teal button" href="/update/{{ todo.id }}">Edit Title</a>
+
             <a class="ui orange button" href="/delete/{{ todo.id }}">Delete</a>
         </div>
         {% endfor %}
