@@ -106,6 +106,15 @@
             border-radius: 15px;
         }
 
+        /* تعديل بسيط: إضافة تأثير تحويم لرابط الخروج */
+        .user-profile a {
+            transition: opacity 0.3s ease;
+        }
+        .user-profile a:hover {
+            opacity: 0.7;
+            text-decoration: underline;
+        }
+
         .ui.emerald.button {
             background-color: var(--emerald) !important;
             color: #FEFCE0 !important;
@@ -175,7 +184,8 @@
                     <form class="ui form" action="/add" method="post">
                         <div class="field">
                             <label>Title</label>
-                            <input type="text" name="title" placeholder="Project name / Task..." required>
+                            <!-- تعديل بسيط: إضافة autocomplete="off" لترتيب الإدخال -->
+                            <input type="text" name="title" placeholder="What is the next goal?" required autocomplete="off">
                         </div>
                         <div class="two fields">
                             <div class="field"><label>Start</label><input type="date" name="start_date"></div>
