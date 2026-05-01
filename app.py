@@ -34,7 +34,7 @@ class Todo(db.Model):
     complete = db.Column(db.Boolean, default=False)
     category = db.Column(db.String(50), default='General')
     priority = db.Column(db.String(10), default='Medium')
-    # الحقول الجديدة المطلوب إضافتها
+    # الحقول المطلوبة للمهمة PROJ-9
     start_date = db.Column(db.String(10)) 
     end_date = db.Column(db.String(10))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
@@ -94,9 +94,10 @@ def add():
     title = request.form.get("title")
     category = request.form.get("category", "General")
     priority = request.form.get("priority", "Medium")
-    # استلام التواريخ من الفورم
-    start_date = request.form.get("start_date")
-    end_date = request.form.get("end_date")
+    
+    # --- التعديل البسيط المطلوب (تأكد من تنظيف المدخلات PROJ-9) ---
+    start_date = request.form.get("start_date", "").strip()
+    end_date = request.form.get("end_date", "").strip()
     
     if title and title.strip():
         new_todo = Todo(
@@ -104,8 +105,8 @@ def add():
             complete=False, 
             category=category, 
             priority=priority, 
-            start_date=start_date, # حفظ تاريخ البداية
-            end_date=end_date,     # حفظ تاريخ النهاية
+            start_date=start_date, # حفظ التاريخ المنظف
+            end_date=end_date,     # حفظ التاريخ المنظف
             user_id=current_user.id
         )
         db.session.add(new_todo)
