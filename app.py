@@ -33,6 +33,11 @@ class Todo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     complete = db.Column(db.Boolean, default=False)
+    category = db.Column(db.String(50), default='General')
+    priority = db.Column(db.String(10), default='Medium')
+    # الحقول المطلوبة للمهمة PROJ-9
+    start_date = db.Column(db.String(10)) 
+    end_date = db.Column(db.String(10))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
 # المسارات (Routes)
@@ -92,7 +97,7 @@ def add():
     category = request.form.get("category", "General")
     priority = request.form.get("priority", "Medium")
     
-    # --- تعديل بسيط لتمكين الكوميت (تنظيف بيانات التاريخ) ---
+    # --- التعديل البسيط المطلوب (تأكد من تنظيف المدخلات PROJ-9) ---
     start_date = request.form.get("start_date", "").strip()
     end_date = request.form.get("end_date", "").strip()
     
@@ -102,8 +107,8 @@ def add():
             complete=False, 
             category=category, 
             priority=priority, 
-            start_date=start_date,
-            end_date=end_date,
+            start_date=start_date, # حفظ التاريخ المنظف
+            end_date=end_date,     # حفظ التاريخ المنظف
             user_id=current_user.id
         )
         db.session.add(new_todo)
