@@ -114,8 +114,10 @@ def add():
     title = request.form.get("title")
     category = request.form.get("category", "General")
     priority = request.form.get("priority", "Medium")
-    start_date = request.form.get("start_date")
-    end_date = request.form.get("end_date")
+    
+    # --- تعديل بسيط لتمكين الكوميت (تنظيف بيانات التاريخ) ---
+    start_date = request.form.get("start_date", "").strip()
+    end_date = request.form.get("end_date", "").strip()
     
     if title and title.strip():
         new_todo = Todo(
