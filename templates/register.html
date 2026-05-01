@@ -46,8 +46,8 @@
             font-weight: 700; 
         }
 
-        /* تحريك الحقول بتتابع زمنى */
-        .field {
+        /* تحريك الحقول والرسائل بتتابع زمني */
+        .field, .ui.message {
             animation: slideInRight 0.5s ease-out both;
         }
         .field:nth-child(1) { animation-delay: 0.3s; }
@@ -95,6 +95,20 @@
             </div>
         </h2>
 
+        <!-- الجزء المضاف لعرض تنبيهات Flask (مثل تكرار اسم المستخدم) -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="ui {% if category == 'error' %}negative{% else %}info{% endif %} message">
+                <i class="close icon"></i>
+                <div class="header">
+                  {{ message }}
+                </div>
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
         <form class="ui form" method="POST">
             <div class="field">
                 <label>Desired Username</label>
@@ -120,5 +134,14 @@
             <a href="/login" class="login-link">Log In</a>
         </div>
     </div>
+
+    <!-- كود بسيط لإغلاق التنبيه عند الضغط على علامة X -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+    <script>
+        $('.message .close').on('click', function() {
+            $(this).closest('.message').transition('fade');
+        });
+    </script>
 </body>
 </html>

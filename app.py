@@ -50,6 +50,13 @@ def register():
     if request.method == 'POST':
         # PROJ-10: Ensuring usernames are stored without leading/trailing spaces
         username = request.form.get('username').strip()
+        
+        # --- التحقق من وجود المستخدم مسبقاً لمنع IntegrityError ---
+        existing_user = User.query.filter_by(username=username).first()
+        if existing_user:
+            flash('Username already exists. Please choose a different one.', 'error')
+            return redirect(url_for('register'))
+            
         hashed_pw = generate_password_hash(request.form.get('password'), method='pbkdf2:sha256')
         
         new_user = User(username=username, password=hashed_pw)
@@ -97,7 +104,7 @@ def add():
     category = request.form.get("category", "General")
     priority = request.form.get("priority", "Medium")
     
-    # --- التعديل البسيط المطلوب (تأكد من تنظيف المدخلات PROJ-9) ---
+    # تنظيف المدخلات PROJ-9
     start_date = request.form.get("start_date", "").strip()
     end_date = request.form.get("end_date", "").strip()
     
@@ -107,8 +114,8 @@ def add():
             complete=False, 
             category=category, 
             priority=priority, 
-            start_date=start_date, # حفظ التاريخ المنظف
-            end_date=end_date,     # حفظ التاريخ المنظف
+            start_date=start_date, 
+            end_date=end_date,     
             user_id=current_user.id
         )
         db.session.add(new_todo)
