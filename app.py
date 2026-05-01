@@ -89,8 +89,23 @@ def home():
 @login_required
 def add():
     title = request.form.get("title")
-    if title:
-        new_todo = Todo(title=title.strip(), complete=False, user_id=current_user.id)
+    category = request.form.get("category", "General")
+    priority = request.form.get("priority", "Medium")
+    
+    # --- تعديل بسيط لتمكين الكوميت (تنظيف بيانات التاريخ) ---
+    start_date = request.form.get("start_date", "").strip()
+    end_date = request.form.get("end_date", "").strip()
+    
+    if title and title.strip():
+        new_todo = Todo(
+            title=title.strip(), 
+            complete=False, 
+            category=category, 
+            priority=priority, 
+            start_date=start_date,
+            end_date=end_date,
+            user_id=current_user.id
+        )
         db.session.add(new_todo)
         db.session.commit()
     return redirect(url_for("home"))
