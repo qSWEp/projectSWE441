@@ -95,9 +95,32 @@
             box-shadow: 0 8px 25px rgba(26, 40, 30, 0.08) !important;
         }
 
+        /* ألوان الأولوية حسب PROJ-6 */
         .priority-High { border-left-color: #db2828 !important; }
         .priority-Medium { border-left-color: #fbbd08 !important; }
         .priority-Low { border-left-color: #2185d0 !important; }
+
+        /* منطقة عرض المهام القابلة للتمرير (السلايد) - PROJ-11 */
+        .task-scroll-box {
+            max-height: 500px; /* أقصى ارتفاع للمنطقة قبل ظهور السلايد */
+            overflow-y: auto;  /* إظهار السلايد العمودي عند الحاجة */
+            overflow-x: hidden;
+            padding-right: 10px;
+            padding-left: 5px;
+        }
+
+        /* تخصيص شكل السلايد */
+        .task-scroll-box::-webkit-scrollbar {
+            width: 7px;
+        }
+        .task-scroll-box::-webkit-scrollbar-track {
+            background: rgba(26, 40, 30, 0.05);
+            border-radius: 10px;
+        }
+        .task-scroll-box::-webkit-scrollbar-thumb {
+            background: var(--emerald);
+            border-radius: 10px;
+        }
 
         .user-profile {
             margin-top: auto;
@@ -106,10 +129,13 @@
             border-radius: 15px;
         }
 
-        /* تعديل بسيط: إضافة تأثير تحويم لرابط الخروج */
         .user-profile a {
             transition: opacity 0.3s ease;
+            color: #ff7675;
+            font-weight: 600;
+            text-decoration: none;
         }
+        
         .user-profile a:hover {
             opacity: 0.7;
             text-decoration: underline;
@@ -142,7 +168,7 @@
             <div style="font-size: 0.85rem; color: rgba(254,252,224,0.5);">Account</div>
             <div style="font-weight: 600; font-size: 1.1rem; margin-top: 5px;">{{ current_user.username }}</div>
             <div style="margin-top: 15px;">
-                <a href="/logout" style="color: #ff7675; font-weight: 600;"><i class="sign out icon"></i> Logout</a>
+                <a href="/logout"><i class="sign out icon"></i> Logout</a>
             </div>
         </div>
     </div>
@@ -184,7 +210,6 @@
                     <form class="ui form" action="/add" method="post">
                         <div class="field">
                             <label>Title</label>
-                            <!-- تعديل بسيط: إضافة autocomplete="off" لترتيب الإدخال -->
                             <input type="text" name="title" placeholder="What is the next goal?" required autocomplete="off">
                         </div>
                         <div class="two fields">
@@ -219,41 +244,47 @@
                     <i class="clipboard outline icon massive" style="color: #dcdde1;"></i>
                     <h3 style="color: #b2bec3; margin-top: 20px;">No pending tasks. Start by adding one!</h3>
                 </div>
-                {% endif %}
-
-                {% for todo in todo_list %}
-                <div class="ui segment task-card priority-{{ todo.priority }}">
-                    <div class="ui grid middle aligned">
-                        <div class="eleven wide column">
-                            <h3 style="margin: 0; {% if todo.complete %}text-decoration: line-through; color: #b2bec3;{% endif %}">
-                                {{ todo.title }}
-                            </h3>
-                            <div style="font-size: 0.85rem; color: #7f8c8d; margin-top: 8px; font-weight: 500;">
-                                <i class="tag icon"></i> {{ todo.category }} | 
-                                <i class="calendar alternate outline icon"></i> {{ todo.start_date or 'N/A' }} - {{ todo.end_date or 'N/A' }}
+                {% else %}
+                
+                <div class="task-scroll-box">
+                    {% for todo in todo_list %}
+                    <div class="ui segment task-card priority-{{ todo.priority }}">
+                        <div class="ui grid middle aligned">
+                            <div class="eleven wide column">
+                                <h3 style="margin: 0; {% if todo.complete %}text-decoration: line-through; color: #b2bec3;{% endif %}">
+                                    {{ todo.title }}
+                                </h3>
+                                <div style="font-size: 0.85rem; color: #7f8c8d; margin-top: 8px; font-weight: 500;">
+                                    <i class="tag icon"></i> {{ todo.category }} | 
+                                    <i class="calendar alternate outline icon"></i> {{ todo.start_date or 'N/A' }} - {{ todo.end_date or 'N/A' }}
+                                </div>
                             </div>
-                        </div>
-                        <div class="five wide column right aligned">
-                            <div class="ui buttons tiny">
-                                <a href="/complete/{{ todo.id }}" class="ui icon basic {{ 'blue' if todo.complete else 'emerald' }} button" title="Change Status">
-                                    <i class="{% if todo.complete %}redo{% else %}check{% endif %} icon"></i>
-                                </a>
-                                <a href="/update/{{ todo.id }}" class="ui icon basic teal button" title="Edit">
-                                    <i class="edit icon"></i>
-                                </a>
-                                <a href="/delete/{{ todo.id }}" class="ui icon basic red button" title="Delete">
-                                    <i class="trash icon"></i>
-                                </a>
+                            <div class="five wide column right aligned">
+                                <div class="ui buttons tiny">
+                                    <a href="/complete/{{ todo.id }}" class="ui icon basic {{ 'blue' if todo.complete else 'emerald' }} button" title="Change Status">
+                                        <i class="{% if todo.complete %}redo{% else %}check{% endif %} icon"></i>
+                                    </a>
+                                    <a href="/update/{{ todo.id }}" class="ui icon basic teal button" title="Edit Details">
+                                        <i class="edit icon"></i>
+                                    </a>
+                                    <a href="/delete/{{ todo.id }}" class="ui icon basic red button" title="Delete">
+                                        <i class="trash icon"></i>
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
+                {% endif %}
             </div>
         </div>
     </div>
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
     <script>
+        // تفعيل القوائم المنسدلة
         $('.ui.dropdown').dropdown();
     </script>
 </body>
